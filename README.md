@@ -1,21 +1,27 @@
 # DreamCandies File Tool
 
+
 ## Problem Summary
 
 The requested feature is a file tool to be used in the test automation process of DreamCandies' billing system migration. Stonebranch will have access to three full database extraction files from DreamCandies. The functionality of the tool is, given a pre-selected sample of 1000 customers, to provide three smaller files containing only data corresponding to those pre-selected customers. These smaller files will be used in the test automation process.
 
 File Specifications:
 - Customer Sample: CUSTOMER_CODE (CHAR)
+
 - Customer: CUSTOMER_CODE (CHAR), FIRSTNAME (CHAR), LASTNAME (CHAR)
+
 - Invoice: CUSTOMER_CODE (CHAR), INVOICE_CODE (CHAR), AMOUNT (FLOAT), DATE (DATE)
+
 - Invoice Item: INVOICE_CODE (CHAR), ITEM_CODE (CHAR), AMOUNT (FLOAT), QUANTITY (INTEGER)
 
+
 ## Assumptions
-1. All files are not necessarily sorted by any field.
+- All files are not necessarily sorted by any field.
 
-2. The pair double quotes surrounding each field are made up of a left and right quote. In the examples of the specifications document, every double quote after the first in each row was a right quote. I assumed this was an error based on the earlier statement that "all fields are double quoted regardless of data type (e.g. “Oliver”)". See further explanation in Implementation section.
+- The pair double quotes surrounding each field are made up of a left and right quote. In the examples of the specifications document, every double quote after the first in each row was a right quote. I assumed this was an error based on the earlier statement that "all fields are double quoted regardless of data type (e.g. &#10077;Oliver&#10078;)". See further explanation in Implementation section.
 
-3. Every input file will be correctly formatted. 
+- Every input file will be correctly formatted. 
+
 
 ## Algorithm Design
 
@@ -29,9 +35,13 @@ The algorithm I designed outlines as follows:
 ## Runtime and Space Analysis
 
 - Number of Sample Customers: 1000
+
 - Mean Number of Invoices Per Customer: ~2 (based on given estimate of customer and invoice files being 500k and 1 million respectively — in any case will be some constant)
+
 - Size of Full Customer File: *n*
+
 - Size of Full Invoice File: 2*n* (based on given estimate of customer and invoice files being 500k and 1 million respectively — in any case will be in the order of *n*).
+
 - Size of Full Invoice File: 10*n* (based on given estimate of customer and invoice item files being 500k and 5 million respectively — in any case will be in the order of *n*).
 
 **Runtime Complexity**: O(*n*)
@@ -43,6 +53,7 @@ The runtime complexity is determined by the size of the files that we're iterati
 The sampleCustomers set will be of size 1000, per the specifications. The number of invoices per customer is ~2 (or some constant *c*), given the file size estimates. So, the sampleInvoices set will be of size 2000 (or *1000c*). In any case, the space complexity will be independent of the size of the full files, so the space complexity is O(1000 + 1000*c*), or O(1).
 
 *Note*: In the case where each file is sorted by the appropriate field, an implementation using binary search could be implented resulting in a runtime in the order of O(log*n*). However, since we assumed the data was not sorted, the theoretical lower bound of the algorithm is O(*n*), since every row must be read in order to ensure no entries of interest are overlooked.
+
 
 # Implementation Decisions
 
