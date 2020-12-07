@@ -56,7 +56,7 @@ The sampleCustomers set will be of size 1000, per the specifications. The number
 
 - I chose to overload both the constructor and extractTestFiles method, allowing for arguments to be either the file names as String types or access to the files themselves as Reader/Writer types. The former gives the reader/writer creation responsibility to the class, while the latter gives the user more flexibility by allowing any memory representation of the data, and not binding it to the file system. This also allows for easier testing since an entire file system doesn't have to be mocked.
 
-- While the reading of each full data file is split into three separate functions for the sake of modularization, the tool requires that the files be read in a certain order (i.e. the information obtained from reading the invoices file is necessary to process the invoice items file). So, those functions remain private, and a single user-facing function calls all three.
+- While the reading of each full data file is split into three separate functions for the sake of modularization, the problem requires that the files be read in a certain order (i.e. the information obtained from reading the invoices file is necessary to process the invoice items file). So, those functions remain private, and a single user-facing function calls all three.
 
 - I included getters for the sampleCustomers and sampleInvoices set, since the former was necessary for testing and both could be of use to the user.
 
