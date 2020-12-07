@@ -48,7 +48,7 @@ The runtime complexity is determined by the size of the files that we're iterati
 The sampleCustomers set will be of size 1000, per the specifications. The number of invoices per customer is ~2 (or some constant *c*), given the file size estimates. So, the sampleInvoices set will be of size 2000 (or *1000c*). In any case, the space complexity will be independent of the size of the full files, so the space complexity is O(1000 + 1000*c*), or O(1).
 
 
-# Implementation Decisions
+## Implementation Decisions
 
 - I chose to use hashsets to store the sample customers and invoices to allow for constant time lookup.
 
@@ -60,7 +60,7 @@ The sampleCustomers set will be of size 1000, per the specifications. The number
 
 - I included getters for the sampleCustomers and sampleInvoices set, since the former was necessary for testing and both could be of use to the user.
 
-# Testing
+## Testing
 
 I chose to write unit tests for the constructor and extractTestFiles method, since those are the two user-facing functions of the class. They are relatively self-explanatory, but summarized below for convenience.
 
