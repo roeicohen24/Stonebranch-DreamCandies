@@ -28,20 +28,18 @@ The algorithm I designed outlines as follows:
 
 ## Runtime and Space Analysis
 
-Number of Sample Customers: 1000
-
-Mean Number of Invoices Per Customer: ~2 (based on given estimate of customer and invoice files being 500k and 1 million respectively — in any case will be some constant)
-
-Size of Full Customer File: *n*
-
-Size of Full Invoice File: 2*n* (based on given estimate of customer and invoice files being 500k and 1 million respectively — in any case will be in the order of *n*).
-
-Size of Full Invoice File: 10*n* (based on given estimate of customer and invoice item files being 500k and 5 million respectively — in any case will be in the order of *n*).
+- Number of Sample Customers: 1000
+- Mean Number of Invoices Per Customer: ~2 (based on given estimate of customer and invoice files being 500k and 1 million respectively — in any case will be some constant)
+- Size of Full Customer File: *n*
+- Size of Full Invoice File: 2*n* (based on given estimate of customer and invoice files being 500k and 1 million respectively — in any case will be in the order of *n*).
+- Size of Full Invoice File: 10*n* (based on given estimate of customer and invoice item files being 500k and 5 million respectively — in any case will be in the order of *n*).
 
 **Runtime Complexity**: O(*n*)
+
 The runtime complexity is determined by the size of the files that we're iterating on. Each file is iterated through a single time. Using a hashset allows for constant time lookup. So, all operations are done in constant time. Reading through each file is O(1000 + *n* + 2*n* + 10*n*), or O(*n*).
 
 **Space Complexity**: O(*1*)
+
 The sampleCustomers set will be of size 1000, per the specifications. The number of invoices per customer is ~2 (or some constant *c*), given the file size estimates. So, the sampleInvoices set will be of size 2000 (or *1000c*). In any case, the space complexity will be independent of the size of the full files, so the space complexity is O(1000 + 1000*c*), or O(1).
 
 *Note*: In the case where each file is sorted by the appropriate field, an implementation using binary search could be implented resulting in a runtime in the order of O(log*n*). However, since we assumed the data was not sorted, the theoretical lower bound of the algorithm is O(*n*), since every row must be read in order to ensure no entries of interest are overlooked.
