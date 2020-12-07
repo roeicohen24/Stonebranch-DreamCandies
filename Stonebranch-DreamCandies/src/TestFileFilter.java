@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
+ * 
  * @author Roei Cohen
  * 
  * The TestFileFilter class prepares testable files from full extraction data, as per the specifications given in feature CR1888_DRC.
@@ -20,7 +21,6 @@ public class TestFileFilter {
 	
 	private Set<String> sampleCustomers = new HashSet<String>(); //set of sample customers
 	private Set<String> sampleInvoices = new HashSet<String>(); //set of invoices attached to sample customers
-	private int sampleSize; //number of sample customers
 	private Reader customer; //reader for full customer extraction file
 	private Reader invoice; //reader for full invoice extraction file
 	private Reader invoiceItem; //reader for full invoiceItem extraction file
@@ -60,7 +60,7 @@ public class TestFileFilter {
 
 	
 	/**
-	 * Reads through the customer sample file and adds each customer code to the set
+	 * Reads through the customer sample file and adds each customer code to the sampleCustomers set
 	 * 
 	 * @param Reader r: reader for file containing the sample set of customers
 	 */
@@ -73,7 +73,6 @@ public class TestFileFilter {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				sampleCustomers.add(line);
-				sampleSize++;
 			}
 			reader.close();
 		} catch (Exception e) {
@@ -83,7 +82,7 @@ public class TestFileFilter {
 	
 	
 	/**
-	 * Reads through the full customer extraction file and produces a smaller file containing only pre-selected customers
+	 * Reads through the full customer extraction file and produces a smaller file containing only pre-selected customers.
 	 * 
 	 * @param Reader r: reader for full extraction file of customer data
 	 * @param Writer w: writer for smaller file of sample customer data
@@ -93,16 +92,20 @@ public class TestFileFilter {
 			BufferedReader reader = new BufferedReader(r);
 			BufferedWriter writer = new BufferedWriter(w);
 			
-			writer.write(reader.readLine() + "\n"); //read file header and write it to new file
+			String line;
+			if ((line = reader.readLine()) != null) { //read file header and write it to new file
+				writer.write(line + "\n");
+			}
 			
 			int count = 0; //number of customers found
-			String line;
+			int breakPoint = sampleCustomers.size(); //number of customers expected
 			while ((line = reader.readLine()) != null) {
-				if (sampleCustomers.contains(line.split(",")[0])) { //get the customer code and check if it's in the sample set
+				String[] splitLine = line.split(",");
+				if (sampleCustomers.contains(splitLine[0])) { //check if customer code is in set
 					writer.write(line + "\n");
 					count++;
 				}
-				if (count == sampleSize) {break;} //all sample customers found
+				if (count == breakPoint) {break;} //all sample customers found
 			}
 			reader.close();
 			writer.close();
@@ -124,9 +127,11 @@ public class TestFileFilter {
 			BufferedReader reader = new BufferedReader(r);
 			BufferedWriter writer = new BufferedWriter(w);
 			
-			writer.write(reader.readLine() + "\n"); //read file header and write it to new file
-			
 			String line;
+			if ((line = reader.readLine()) != null) { //read file header and write it to new file
+				writer.write(line + "\n");
+			}
+			
 			while ((line = reader.readLine()) != null) {
 				String[] splitLine = line.split(",");
 				if (sampleCustomers.contains(splitLine[0])) { //check if customer code is in set
@@ -154,9 +159,11 @@ public class TestFileFilter {
 			BufferedReader reader = new BufferedReader(r);
 			BufferedWriter writer = new BufferedWriter(w);
 			
-			writer.write(reader.readLine() + "\n"); //read file header and write it to new file
-			
 			String line;
+			if ((line = reader.readLine()) != null) { //read file header and write it to new file
+				writer.write(line + "\n");
+			}
+			
 			while ((line = reader.readLine()) != null) {
 				String[] splitLine = line.split(",");
 				if (sampleInvoices.contains(splitLine[0])) { //check if invoice number is in set
@@ -220,7 +227,10 @@ public class TestFileFilter {
 	
 	
 	/**
-	 * @param args
+	 * Sample use of TestFileFilter object
+	 * 
+	 * @param String[] args: contains files names of sample customers, customers, invoices, and invoice items 
+	 * ("customer_sample.csv","customer.csv","invoice.csv","invoice_item.csv")
 	 */
 	public static void main(String[] args) {
 		if (args.length != 4) {throw new IllegalArgumentException();}

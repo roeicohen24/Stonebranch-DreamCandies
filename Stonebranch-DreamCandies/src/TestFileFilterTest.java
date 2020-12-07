@@ -1,28 +1,45 @@
 import static org.junit.Assert.*;
-
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 
-/**
- * 
- */
 
 /**
  * @author Roei Cohen
- *
+ * 
+ * Unit tests for TestFileFilter Class: Constructor and extractTestFiles
  */
 public class TestFileFilterTest {
 	
 	/**
 	 * Test method for {@link TestFileFilter#TestFileFilter(java.io.Reader, java.io.Reader, java.io.Reader, java.io.Reader)}.
+	 * 
+	 * Tests TestFileFilterTest Constructor in the case where the file of sample customers is completely empty (no header).
+	 * Expected behavior is that the sampleCustomers set is empty.
 	 */
 	@Test
-	public void Constructor_EmptySampleCustomerFile_SampleSetIsEmpty() {
+	public void constructor_EmptySampleCustomerFile_SampleSetIsEmpty() {
+		Reader sampleCustomers = new StringReader("");
+		Reader customer = new StringReader("");
+		Reader invoice = new StringReader("");
+		Reader invoiceItems = new StringReader("");
+		
+		TestFileFilter test = new TestFileFilter(sampleCustomers,customer,invoice,invoiceItems);
+		assertTrue(test.getSampleCustomers().isEmpty());
+	}
+	
+	
+	/**
+	 * Test method for {@link TestFileFilter#TestFileFilter(java.io.Reader, java.io.Reader, java.io.Reader, java.io.Reader)}.
+	 * 
+	 * Tests TestFileFilterTest Constructor in the case where the file of sample customers contains no customer codes.
+	 * Expected behavior is that the sampleCustomers set is empty.
+	 */
+	@Test
+	public void constructor_NoCustomerCodes_SampleSetIsEmpty() {
 		Reader sampleCustomers = new StringReader("\"CUSTOMER_CODE\"\n");
 		Reader customer = new StringReader("");
 		Reader invoice = new StringReader("");
@@ -35,9 +52,12 @@ public class TestFileFilterTest {
 	
 	/**
 	 * Test method for {@link TestFileFilter#TestFileFilter(java.io.Reader, java.io.Reader, java.io.Reader, java.io.Reader)}.
+	 * 
+	 * Tests TestFileFilterTest Constructor in the typical case where the file of sample customers contains some customer codes.
+	 * Expected behavior is that the sampleCustomers set contains each of these codes.
 	 */
 	@Test
-	public void Constructor_TwoSampleCustomers_SampleSetContainsTwoCustomers() {
+	public void constructor_TwoSampleCustomers_SampleSetContainsTwoCustomers() {
 		Reader sampleCustomers = new StringReader("\"CUSTOMER_CODE\"\n" + 
 				"\"CUST0000010231\"\n" + 
 				"\"CUST0000010235\"\n");
@@ -53,12 +73,39 @@ public class TestFileFilterTest {
 	}
 
 	
+	/**
+	 * Test method for {@link TestFileFilter#extractTestFiles(java.io.Writer, java.io.Writer, java.io.Writer)}.
+	 * 
+	 * Tests extractTestFiles in the case where the full data files are completely empty (no headers).
+	 * Expected behavior is that all output files are completely empty (no headers).
+	 */
+	@Test
+	public void extractTestFiles_DataFilesAreEmpty_AllFilesAreEmptyWithoutHeaders() {
+		Reader sampleCustomers = new StringReader("\"CUSTOMER_CODE\"\n" + 
+				"\"CUST0000010240\"\n");
+		Reader customer = new StringReader("");
+		Reader invoice = new StringReader("");
+		Reader invoiceItems = new StringReader("");
+		Writer customerOut = new StringWriter();
+		Writer invoiceOut = new StringWriter();
+		Writer invoiceItemOut = new StringWriter();
+
+		TestFileFilter test = new TestFileFilter(sampleCustomers,customer,invoice,invoiceItems);
+		test.extractTestFiles(customerOut,invoiceOut,invoiceItemOut);
+		assertEquals(customerOut.toString(),"");
+		assertEquals(invoiceOut.toString(),"");
+		assertEquals(invoiceItemOut.toString(),"");
+	}
+	
 	
 	/**
 	 * Test method for {@link TestFileFilter#extractTestFiles(java.io.Writer, java.io.Writer, java.io.Writer)}.
+	 * 
+	 * Tests extractTestFiles in the case where the sample customer codes are not contained in the full customer file.
+	 * Expected behavior is that all output files contain only headers and are otherwise empty.
 	 */
 	@Test
-	public void ExtractTestFiles_OneCustomerWithNoMatchingData_LastTwoExtractedFilesAreEmpty() {
+	public void extractTestFiles_OneCustomerWithNoMatchingData_AllFilesAreEmpty() {
 		Reader sampleCustomers = new StringReader("\"CUSTOMER_CODE\"\n" + 
 				"\"CUST0000010240\"\n");
 		Reader customer = new StringReader("\"CUSTOMER_CODE\",\"FIRSTNAME\",\"LASTNAME\"\n" + 
@@ -85,9 +132,14 @@ public class TestFileFilterTest {
 	
 	/**
 	 * Test method for {@link TestFileFilter#extractTestFiles(java.io.Writer, java.io.Writer, java.io.Writer)}.
+	 * 
+	 * Tests extractTestFiles in the case where the sample customer codes is contained in the full customer file, but
+	 * has no corresponding invoices.
+	 * Expected behavior is that the smaller customer file contains the customer information, and that the other 
+	 * two files are empty.
 	 */
 	@Test
-	public void ExtractTestFiles_OneCustomerWithNoInvoice_LastTwoExtractedFilesAreEmpty() {
+	public void extractTestFiles_OneCustomerWithNoInvoice_LastTwoExtractedFilesAreEmpty() {
 		Reader sampleCustomers = new StringReader("\"CUSTOMER_CODE\"\n" + 
 				"\"CUST0000010235\"\n");
 		Reader customer = new StringReader("\"CUSTOMER_CODE\",\"FIRSTNAME\",\"LASTNAME\"\n" + 
@@ -118,9 +170,12 @@ public class TestFileFilterTest {
 	
 	/**
 	 * Test method for {@link TestFileFilter#extractTestFiles(java.io.Writer, java.io.Writer, java.io.Writer)}.
+	 * 
+	 * Tests extractTestFiles in the case of a single customer code that has corresponding data in all three files.
+	 * Expected behavior is that each output file contains the data corresponding to the customer code.
 	 */
 	@Test
-	public void ExtractTestFiles_HappyPathWithOneCustomer_ExtractedFilesContainRelevantData() {
+	public void extractTestFiles_HappyPathWithOneCustomer_ExtractedFilesContainRelevantData() {
 		Reader sampleCustomers = new StringReader("\"CUSTOMER_CODE\"\n" + 
 				"\"CUST0000010231\"\n");
 		Reader customer = new StringReader("\"CUSTOMER_CODE\",\"FIRSTNAME\",\"LASTNAME\"\n" + 
@@ -151,9 +206,12 @@ public class TestFileFilterTest {
 	
 	/**
 	 * Test method for {@link TestFileFilter#extractTestFiles(java.io.Writer, java.io.Writer, java.io.Writer)}.
+	 * 
+	 * Tests extractTestFiles in the case of multiple customer codes that have corresponding data in all three files.
+	 * Expected behavior is that each output file contains the data corresponding to the customer codes.
 	 */
 	@Test
-	public void ExtractTestFiles_HappyPathWithMultipleCustomers_ExtractedFilesContainRelevantData() {
+	public void extractTestFiles_HappyPathWithMultipleCustomers_ExtractedFilesContainRelevantData() {
 		Reader sampleCustomers = new StringReader("\"CUSTOMER_CODE\"\n" + 
 				"\"CUST0000010231\"\n" + 
 				"\"CUST0000010235\"\n");
@@ -203,4 +261,5 @@ public class TestFileFilterTest {
 				"\"IN0000003\",\"POCKY\",\"16.64\",\"400\"\n" + 
 				"\"IN0000003\",\"PUCCHO\",\"97.50\",\"200\"\n");
 	}
+	
 }
