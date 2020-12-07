@@ -62,7 +62,7 @@ The sampleCustomers set will be of size 1000, per the specifications. The number
 
 ## Testing
 
-I chose to write unit tests for the constructor and extractTestFiles method, since those are the two user-facing functions of the class. They are relatively self-explanatory, but summarized below for convenience.
+I chose to write unit tests for the constructor and extractTestFiles method, since those are the two meaningful user-facing functions of the class. They are relatively self-explanatory, but summarized below for convenience.
 
 **Constructor**:
 - Case 1: File of sample customers is completely empty (no header)
