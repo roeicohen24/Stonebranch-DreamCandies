@@ -69,7 +69,7 @@ I chose to write unit tests for the constructor and extractTestFiles method, sin
 - Case 2: File of sample customers is empty (has header, contains no customers)
 - Case 3: File of sample customers contains some customer codes
 
-**extractTestFiles**
+**extractTestFiles**:
 - Case 1: Full data files are completely empty (no headers)
 - Case 2: Sample customers are not contained in full customer file
 - Case 3: Sample customers are contained in full customer file, but have no corresponding invoices
