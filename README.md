@@ -7,11 +7,8 @@ The requested feature is a file tool to be used in the test automation process o
 
 File Specifications:
 - Customer Sample: CUSTOMER_CODE (CHAR)
-
 - Customer: CUSTOMER_CODE (CHAR), FIRSTNAME (CHAR), LASTNAME (CHAR)
-
 - Invoice: CUSTOMER_CODE (CHAR), INVOICE_CODE (CHAR), AMOUNT (FLOAT), DATE (DATE)
-
 - Invoice Item: INVOICE_CODE (CHAR), ITEM_CODE (CHAR), AMOUNT (FLOAT), QUANTITY (INTEGER)
 
 
@@ -35,13 +32,9 @@ The algorithm I designed outlines as follows:
 ## Runtime and Space Analysis
 
 - Number of Sample Customers: 1000
-
 - Mean Number of Invoices Per Customer: ~2 (based on given estimate of customer and invoice files being 500k and 1 million respectively — in any case will be some constant)
-
 - Size of Full Customer File: *n*
-
 - Size of Full Invoice File: 2*n* (based on given estimate of customer and invoice files being 500k and 1 million respectively — in any case will be in the order of *n*).
-
 - Size of Full Invoice File: 10*n* (based on given estimate of customer and invoice item files being 500k and 5 million respectively — in any case will be in the order of *n*).
 
 **Runtime Complexity**: O(*n*)
