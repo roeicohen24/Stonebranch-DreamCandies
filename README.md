@@ -54,5 +54,25 @@ The sampleCustomers set will be of size 1000, per the specifications. The number
 
 - The sets store strings containing the surrounding left and right quotes in addition to the actual customer/invoice code, in order to avoid the extra substring operation. For example, the set contains the String ""CUST0000010231"" rather than "CUST0000010231". Looking back to the quote format assumption made above, the current implemention would lead to a bug (e.g. &#10077;IN0000001&#10078; would not match with &#10078;IN0000001&#10078;) if the assumption was incorrect. However, this could easily be solved by storing and comparing the substrings excluding the first and last characters in each field.
 
-- I chose to overload both the constructor and extractTestFiles method, allowing for arguments of either the file names as String types or access to the files themselves through Reader/Writer types. The former gives the reader/writer creation responsibility to the class, while the latter gives the user more flexibility by allowing any memory representation of the data, and not binding it to the file system. This also allows for easier testing since an entire file system doesn't have to be mocked.
+- I chose to overload both the constructor and extractTestFiles method, allowing for arguments to be either the file names as String types or access to the files themselves as Reader/Writer types. The former gives the reader/writer creation responsibility to the class, while the latter gives the user more flexibility by allowing any memory representation of the data, and not binding it to the file system. This also allows for easier testing since an entire file system doesn't have to be mocked.
+
+- While the reading of each full data file is split into three separate functions for the sake of modularization, the tool requires that the files be read in a certain order (i.e. the information obtained from reading the invoices file is necessary to process the invoice items file). So, those functions remain private, and a single user-facing function calls all three.
+
+- I included getters for the sampleCustomers and sampleInvoices set, since the former was necessary for testing and both could be of use to the user.
+
+# Testing
+
+I chose to write unit tests for the constructor and extractTestFiles method, since those are the two user-facing functions of the class. They are relatively self-explanatory, but summarized below for convenience.
+
+**Constructor**:
+- Case 1: File of sample customers is completely empty (no header)
+- Case 2: File of sample customers is empty (has header, contains no customers)
+- Case 3: File of sample customers contains some customer codes
+
+**extractTestFiles**
+- Case 1: Full data files are completely empty (no headers)
+- Case 2: Sample customers are not contained in full customer file
+- Case 3: Sample customers are contained in full customer file, but have no corresponding invoice
+- Case 4: Happy path with one customer
+- Case 5: Happy path with multiple customers (using specification example)
 
