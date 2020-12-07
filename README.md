@@ -3,7 +3,7 @@
 
 ## Problem Summary
 
-The requested feature is a file tool to be used in the test automation process of DreamCandies' billing system migration. Stonebranch will have access to three full database extraction files from DreamCandies. The functionality of the tool is, given a pre-selected sample of 1000 customers, to provide three smaller files containing only data corresponding to those pre-selected customers. These smaller files will be used in the test automation process.
+The desired feature is a file tool to be used in the test automation process of DreamCandies' billing system migration. Stonebranch will have access to three full database extraction files from DreamCandies. The functionality of the tool is, given a pre-selected sample of 1000 customers, to provide three smaller files containing only data corresponding to those pre-selected customers. These smaller files will be used in the test automation process.
 
 File Specifications:
 - Customer Sample: CUSTOMER_CODE (CHAR)
@@ -13,9 +13,9 @@ File Specifications:
 
 
 ## Assumptions
-- All files are not necessarily sorted by any field.
+- Files are not necessarily sorted by any field.
 
-- The pair double quotes surrounding each field are made up of a left and right quote. In the examples of the specifications document, every double quote after the first in each row was a right quote. I assumed this was an error based on the earlier statement that "all fields are double quoted regardless of data type (e.g. &#10077;Oliver&#10078;)". See further explanation in Implementation section.
+- The pair of double quotes surrounding each field are made up of a left and right quote. In the examples of the specifications document, every double quote after the first in each row was a right quote. I assumed this was an error based on the earlier statement that "all fields are double quoted regardless of data type (e.g. &#10077;Oliver&#10078;)". See further explanation in Implementation section.
 
 - Every input file will be correctly formatted. 
 
@@ -41,11 +41,11 @@ The algorithm I designed outlines as follows:
 
 The runtime complexity is determined by the size of the files that we're iterating on. Each file is iterated through a single time. Using a hashset allows for constant time lookup. So, all operations are done in constant time. Reading through each file is O(1000 + *n* + 2*n* + 10*n*), or O(*n*).
 
+*Note*: In the case where each file is sorted by the appropriate field, an implementation using binary search could be implented resulting in a runtime in the order of O(log*n*). However, since we assumed the data was not sorted, the theoretical lower bound of the algorithm is O(*n*), since every row must be read in order to ensure no entries of interest are overlooked.
+
 **Space Complexity**: O(*1*)
 
 The sampleCustomers set will be of size 1000, per the specifications. The number of invoices per customer is ~2 (or some constant *c*), given the file size estimates. So, the sampleInvoices set will be of size 2000 (or *1000c*). In any case, the space complexity will be independent of the size of the full files, so the space complexity is O(1000 + 1000*c*), or O(1).
-
-*Note*: In the case where each file is sorted by the appropriate field, an implementation using binary search could be implented resulting in a runtime in the order of O(log*n*). However, since we assumed the data was not sorted, the theoretical lower bound of the algorithm is O(*n*), since every row must be read in order to ensure no entries of interest are overlooked.
 
 
 # Implementation Decisions
@@ -72,7 +72,7 @@ I chose to write unit tests for the constructor and extractTestFiles method, sin
 **extractTestFiles**
 - Case 1: Full data files are completely empty (no headers)
 - Case 2: Sample customers are not contained in full customer file
-- Case 3: Sample customers are contained in full customer file, but have no corresponding invoice
+- Case 3: Sample customers are contained in full customer file, but have no corresponding invoices
 - Case 4: Happy path with one customer
 - Case 5: Happy path with multiple customers (using specification example)
 
